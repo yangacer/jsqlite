@@ -3,61 +3,80 @@
 #include <stdexcept>
 #include <sstream>
 #include <iostream>
+#include <boost/lexical_cast.hpp>
 #include "json/json.hpp"
 #include "sqlite3/sqlite3.h"
 
-class schema 
+#define FREE_(x) \
+{ \
+  sqlite3_free(x); \
+  x = 0; \
+}
+
+void from_literal(yangacer::json::var_t &v, char const* literal)
 {
-public:
-  typedef yangacer::json::object_t table_t;
-  typedef table_t column_def_t;
-  typedef table_t table_schema_t;
+  using boost::lexical_cast;
 
-  schema(std::string const &dbfile)
-  : db_(), zErrMSG_(0)
-  {
-    if( sqlite3_open(dbfile.c_str(), &db_) )
-      throw std::runtime_error("Open/Create db failed");
+  switch(v.which()) {
+  case 1:
+    v = lexical_cast<unsigned int>(literal);
+    break;
+  case 4:
+    boost::get<std::string>(v).assign(literal);
+    break;
   }
-
-  ~schema()
-  {
-    if(zErrMSG_) sqlite3_free(zErrMSG_);
-    sqlite3_close(db_);
-  }
-
-  void create_table(std::string const& name, table_t const &table)
-  {
-    auto i = tables_.find(name);
-    if (i == tables_.end()) {
-      tables_[name] = table;
-      std::stringstream stmt;
-      stmt << "CRATE TABLE IF NOT EXISTS " << name << "(";
-      for ( auto col = table.begin(); col != table.end(); ++col ) {
-        stmt << col->first << boost::get<std::string>(col->second) << ",";
-      } 
-      std::cerr << stmt.str() << "\n";
-    }
-  }
-
-private:
-  sqlite3 *db_;
-  char *zErrMSG_;
-  table_schema_t tables_;
 };
+
+int print_data(void* json_arg, int col_num, char** col_val, char** col_name)
+{
+  using namespace std;
+  using namespace yangacer;
+  json::object_t *json = (json::object_t*)json_arg;
+
+  for(int i=0;i<col_num;i++) {
+    from_literal((*json)[col_name[i]], col_val[i]);
+  }
+  json::pretty_print(std::cerr, *json);
+  return 0;
+}
 
 int main()
 {
   using namespace std;
+  using namespace yangacer;
 
-  schema s("test.db");
-  
-  schema::table_t person;
-  
-  person["email"] = string("TEXT PRIMARY KEY");
-  person["name"] = string("TEXT");
+  // premodel a json object
 
-  s.create_table("person", person); 
+  json::object_t person;
+
+  person["name"] = string();
+  person["email"] = string();
+  person["age"] = 0u;
+
+  sqlite3 *db;
+  char *error=0;
+  
+  sqlite3_open("person.db", &db);
+  sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS person "
+               "(name TEXT, email TEXT PRIMARY KEY, age INTEGER) ",
+               NULL, NULL, &error);
+  if(error) FREE_(error);
+
+  sqlite3_exec(db, "INSERT INTO person (name, email, age) "
+               "VALUES ('Acer Yang', 'yangacer@gmail.com', 30 )",
+               NULL, NULL, &error);
+  if(error) FREE_(error);
+
+  sqlite3_exec(db, "INSERT INTO person (name, email, age) "
+               "VALUES ('Tomato Chou', 'tomatoto@gmail.com', 18 )",
+               NULL, NULL, &error);
+  if(error) FREE_(error);
+
+  sqlite3_exec(db, "SELECT * FROM person",
+               &print_data, (void*)&person, &error);
+
+  if(error) FREE_(error);
+  sqlite3_close(db);
 
   return 0;
 }
