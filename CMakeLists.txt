@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 2.8)
 project ( jsqlite )
 
+include (use_c++11.cmake)
+
 find_package ( Boost COMPONENTS variant)
 
 add_subdirectory ( JSON-CC )
