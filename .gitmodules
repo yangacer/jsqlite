@@ -1,0 +1,3 @@
+[submodule "JSON-CC"]
+	path = JSON-CC
+	url = git://github.com/yangacer/JSON-CC.git
