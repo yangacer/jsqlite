@@ -6,8 +6,12 @@ include (use_c++11.cmake)
 find_package ( Boost COMPONENTS variant)
 
 add_subdirectory ( JSON-CC )
+add_subdirectory ( js_sqlite3 )
 
-include_directories ( JSON-CC sqlite3 ${Boost_INCLUDE_DIRS})
+include_directories ( JSON-CC js_sqlite3 ${Boost_INCLUDE_DIRS})
 
-add_executable ( test test.cpp sqlite3/sqlite3.c)
-target_link_libraries ( test json pthread dl)
+add_executable ( select select.cpp )
+target_link_libraries ( select json pthread jl_sqlite3)
+
+add_executable ( insert insert.cpp )
+target_link_libraries ( insert json pthread jl_sqlite3)
