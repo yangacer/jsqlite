@@ -111,6 +111,15 @@ int main()
 
   insert(db, "person", person);
 
+  person["name"] = string("楊秉諺");
+  person["email"] = string("fates.michael@gmail.com");
+  person["age"] = 99u;
+  connect.resize(2);
+  connect[0] = string("changyy@gmail.com");
+  connect[1] = string("Yang Acer");
+
+  insert(db, "person", person);
+
   sqlite3_close(db);
 
   return 0;

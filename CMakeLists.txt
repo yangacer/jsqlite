@@ -10,8 +10,14 @@ add_subdirectory ( js_sqlite3 )
 
 include_directories ( JSON-CC js_sqlite3 ${Boost_INCLUDE_DIRS})
 
-add_executable ( select select.cpp )
-target_link_libraries ( select json pthread jl_sqlite3)
+#add_executable ( select select.cpp )
+#target_link_libraries ( select json pthread jl_sqlite3)
 
-add_executable ( insert insert.cpp )
-target_link_libraries ( insert json pthread jl_sqlite3)
+#add_executable ( insert insert.cpp )
+#target_link_libraries ( insert json pthread jl_sqlite3)
+
+add_library ( jsqlite jsqlite.cpp gen.cpp )
+target_link_libraries ( jsqlite json pthread jl_sqlite3)
+
+add_executable ( demo test.cpp )
+target_link_libraries ( demo jsqlite )

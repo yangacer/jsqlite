@@ -8,12 +8,6 @@
 #include "json/accessor.hpp"
 #include "js_sqlite3/sqlite3.h"
 
-#define FREE_(x) \
-{ \
-  sqlite3_free(x); \
-  x = 0; \
-}
-
 int print_data(void* json_arg, int col_num, char** col_val, char** col_name)
 {
   using namespace std;
@@ -38,10 +32,11 @@ int main()
   using namespace std;
   using namespace yangacer;
 
+#define PROMPT_ERROR(ec) if(ec){ cerr << ec << "\n"; sqlite3_free(ec); ec=0; }
+
   // premodel a json object
 
   json::var_t person = json::object_t();
- 
 
   json::member_of(person)["name"].value(string());
   json::member_of(person)["email"].value(string());
@@ -53,20 +48,15 @@ int main()
   
   sqlite3_open("person.db", &db);
   sqlite3_enable_load_extension(db, 1);
-
   sqlite3_exec(db, "SELECT load_extension('js_sqlite3/libjl_sqlite3_regexp.so')", NULL, NULL, &error);
-  if(error) {
-    cerr << error << "\n";
-    FREE_(error);
-  }
 
-  sqlite3_exec(db, "SELECT * FROM person WHERE email REGEXP '.*gmail.com'",
+  PROMPT_ERROR(error);
+
+  sqlite3_exec(db, "SELECT * FROM person WHERE name REGEXP '楊.*'",
                &print_data, (void*)&person, &error);
 
-  if(error) {
-    cerr << error << "\n";
-    FREE_(error);
-  }
+  PROMPT_ERROR(error);
+  
   sqlite3_close(db);
 
   return 0;
