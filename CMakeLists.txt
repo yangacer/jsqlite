@@ -19,5 +19,5 @@ include_directories ( JSON-CC js_sqlite3 ${Boost_INCLUDE_DIRS})
 add_library ( jsqlite jsqlite.cpp gen.cpp )
 target_link_libraries ( jsqlite json pthread jl_sqlite3)
 
-add_executable ( demo test.cpp )
+add_executable ( demo demo.cpp )
 target_link_libraries ( demo jsqlite )

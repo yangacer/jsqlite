@@ -14,9 +14,14 @@ namespace json = yangacer::json;
  * @param result 
  * @param db Valid sqlite3 db handle
  * @param stmt Statement
+ * @param error Error string reported from sqlite3. It needs to be freed
+ * manually.
  * @return SQLite3 error code
  */
-int select(std::vector<json::var_t> &result, sqlite3* db, std::string const &stmt);
+int select(std::vector<json::var_t> &result, 
+           sqlite3* db, 
+           std::string const &stmt,
+           char **error);
 
 /** 
  * Generate literal data from variable
@@ -26,8 +31,6 @@ int select(std::vector<json::var_t> &result, sqlite3* db, std::string const &stm
  * type of a variable automatically.
  */
 std::string lit(json::var_t const &variable);
-
-std::string lit(json::object_t const &object);
 
 } // namespace jsqlite
 

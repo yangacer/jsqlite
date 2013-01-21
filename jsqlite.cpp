@@ -1,5 +1,6 @@
 #include "jsqlite.hpp"
 #include "gen.hpp"
+#include "boost/variant/apply_visitor.hpp"
 
 namespace jsqlite {
 
@@ -19,20 +20,15 @@ int select_cb(void* result_arg, int col_num, char ** col_val, char **col_name)
   return 0;
 }
 
-int select(std::vector<json::var_t> &result, sqlite3* db, std::string const &stmt)
+int select(std::vector<json::var_t> &result, sqlite3* db, std::string const &stmt, char **error)
 {
   int rc;
-  char *error=0;
-  rc = sqlite3_exec(db, stmt.c_str(), &select_cb, (void*)&result, &error);
-  sqlite3_free(error);
+  rc = sqlite3_exec(db, stmt.c_str(), &select_cb, (void*)&result, error);
   return rc;
 }
 
 std::string lit(json::var_t const &variable)
-{  return gen_sql_insertable()(variable); }
-
-std::string lit(json::object_t const &object)
-{  return gen_sql_insertable()(object); }
+{  return boost::apply_visitor(gen_sql_insertable(),variable); }
 
 
 } // namespace jsqlite
