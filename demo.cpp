@@ -33,7 +33,10 @@ int main()
   mbof(person)["connect"][0] = string("Yang Acer");
   mbof(person)["connect"][1] = string("Cheng YY");
 
-  stmt << "INSERT INTO person " << lit(person) ;
+  stmt << "INSERT INTO person " << 
+    col_names(mbof(person).object()) << " VALUES " << 
+    col_values(mbof(person).object())
+    ;
 
   std::cerr << stmt.str() << "\n";
 

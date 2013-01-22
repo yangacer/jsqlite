@@ -32,6 +32,20 @@ int select(std::vector<json::var_t> &result,
  */
 std::string lit(json::var_t const &variable);
 
+/**
+ * Generate column names
+ * @param object
+ * @return "( column_name1, column_name2, ... )"
+ */
+std::string col_names(json::object_t const &object);
+
+/**
+ * Generate column values
+ * @param object
+ * @return "( column_value1, column_value2, ... )"
+ */
+std::string col_values(json::object_t const &object);
+
 } // namespace jsqlite
 
 #endif

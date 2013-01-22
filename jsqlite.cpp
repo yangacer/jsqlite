@@ -30,5 +30,28 @@ int select(std::vector<json::var_t> &result, sqlite3* db, std::string const &stm
 std::string lit(json::var_t const &variable)
 {  return boost::apply_visitor(gen_sql_insertable(),variable); }
 
+std::string col_names(json::object_t const &object)
+{ 
+  std::string result = "(";
+  for(auto i = object.begin(); i != object.end(); ++i ) {
+    if( i != object.begin() )
+      result += ",";
+    result += i->first;
+  }
+  result += ")";
+  return result;
+}
+
+std::string col_values(json::object_t const &object)
+{
+  std::string result = "(";
+  for(auto i = object.begin(); i != object.end(); ++i ) {
+    if( i != object.begin() )
+      result += ",";
+    result += lit(i->second);
+  }
+  result += ")";
+  return result;
+}
 
 } // namespace jsqlite
