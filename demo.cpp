@@ -1,6 +1,6 @@
 #include <iostream>
 #include <sstream>
-#include "js_sqlite3/sqlite3.h"
+#include "jl_sqlite3/sqlite3.h"
 #include "json/accessor.hpp"
 #include "jsqlite.hpp"
 

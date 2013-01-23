@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include "json/json.hpp"
-#include "js_sqlite3/sqlite3.h"
+#include "jl_sqlite3/sqlite3.h"
 
 namespace jsqlite {
 namespace json = yangacer::json;
