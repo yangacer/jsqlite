@@ -56,8 +56,8 @@ int main()
 
   PROMPT_ERROR(error);
 
-  for( auto &i : results )
-    json::pretty_print(std::cerr, i);
+  for( auto i = results.begin(); i != results.end(); ++i)
+    json::pretty_print(std::cerr, *i);
 
   return 0;
 }
