@@ -3,15 +3,17 @@ project ( jsqlite )
 
 include (use_c++11.cmake)
 
+list (APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_mod )
+
+find_package ( JSONCC REQUIRED )
 find_package ( Boost COMPONENTS variant)
 
-add_subdirectory ( JSON-CC )
 add_subdirectory ( jl_sqlite3 )
 
-include_directories ( JSON-CC js_sqlite3 ${Boost_INCLUDE_DIRS})
+include_directories ( js_sqlite3 ${Boost_INCLUDE_DIRS} ${JSONCC_INCLUDE_DIRS} )
 
 add_library ( jsqlite SHARED jsqlite.cpp gen.cpp )
-target_link_libraries ( jsqlite json pthread jl_sqlite3)
+target_link_libraries ( jsqlite ${JSONCC_LIBRARIES} pthread jl_sqlite3)
 
 add_executable ( demo demo.cpp )
 target_link_libraries ( demo jsqlite )
