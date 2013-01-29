@@ -12,10 +12,12 @@ add_subdirectory ( jl_sqlite3 )
 
 include_directories ( js_sqlite3 ${Boost_INCLUDE_DIRS} ${JSONCC_INCLUDE_DIRS} )
 
-add_library ( jsqlite SHARED jsqlite.cpp gen.cpp )
+add_library ( jsqlite SHARED jsqlite.cpp gen.cpp ) #where.cpp)
 target_link_libraries ( jsqlite ${JSONCC_LIBRARIES} pthread jl_sqlite3)
 
 add_executable ( demo demo.cpp )
 target_link_libraries ( demo jsqlite )
+
+add_subdirectory ( tests )
 
 install ( TARGETS jsqlite DESTINATION lib )
