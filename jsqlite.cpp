@@ -1,14 +1,15 @@
 #include "jsqlite.hpp"
 #include "gen.hpp"
 #include "boost/variant/apply_visitor.hpp"
+#include "json/accessor.hpp"
 
 namespace jsqlite {
 
 int select_cb(void* result_arg, int col_num, char ** col_val, char **col_name)
 {
-  std::vector<json::var_t> &result = *(std::vector<json::var_t>*)(result_arg);
+  json::array_t &result = *(json::array_t*)(result_arg);
   result.push_back(json::object_t());
-  json::object_t &obj = json::get<json::object_t>(result.back());
+  json::object_t &obj = mbof(result.back()).object();
   for(int i=0;i<col_num;i++) {
     if(col_val[i]) {
       char const *beg = col_val[i];
@@ -22,7 +23,7 @@ int select_cb(void* result_arg, int col_num, char ** col_val, char **col_name)
   return 0;
 }
 
-int select(std::vector<json::var_t> &result, sqlite3* db, std::string const &stmt, char **error)
+int select(json::array_t &result, sqlite3* db, std::string const &stmt, char **error)
 {
   int rc;
   rc = sqlite3_exec(db, stmt.c_str(), &select_cb, (void*)&result, error);

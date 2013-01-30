@@ -18,7 +18,7 @@ namespace json = yangacer::json;
  * manually.
  * @return SQLite3 error code
  */
-int select(std::vector<json::var_t> &result, 
+int select(json::array_t &result, 
            sqlite3* db, 
            std::string const &stmt,
            char **error);

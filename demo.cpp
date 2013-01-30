@@ -17,7 +17,7 @@ int main()
   char *error=0;
   stringstream stmt;
   json::var_t person = json::object_t();
-  std::vector<json::var_t> results;
+  json::array_t results;
 
   sqlite3_open("person.db", &db);
   sqlite3_enable_load_extension(db, 1);
