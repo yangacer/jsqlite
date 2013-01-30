@@ -17,7 +17,7 @@ int main()
   char *error=0;
   stringstream stmt;
   json::var_t person = json::object_t();
-  vector<json::var_t> results;
+  std::vector<json::var_t> results;
 
   sqlite3_open("person.db", &db);
   sqlite3_enable_load_extension(db, 1);
@@ -51,6 +51,8 @@ int main()
     lit(mbof(person)["name"].var());
 
   cerr << stmt.str() << "\n";
+
+  cerr << lit(mbof(person)["connect"].var()) << "\n";
 
   jsqlite::select(results, db, stmt.str(), &error);
 

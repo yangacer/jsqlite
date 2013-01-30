@@ -46,6 +46,8 @@ std::string col_names(json::object_t const &object);
  */
 std::string col_values(json::object_t const &object);
 
+std::string vector(json::array_t const &array);
+
 } // namespace jsqlite
 
 #endif
