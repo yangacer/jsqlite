@@ -1,9 +1,9 @@
 cmake_minimum_required (VERSION 2.8)
 project ( jsqlite )
 
-include (use_c++11.cmake)
 
 list (APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_mod )
+include (use_c++11)
 
 find_package ( JSONCC REQUIRED )
 find_package ( Boost COMPONENTS variant)
