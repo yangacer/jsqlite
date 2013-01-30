@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
-project (jl_sqlite3)
+project (jl_sqlite3 C)
 
 find_package ( PCRE REQUIRED )
 include_directories ( ${PROJECT_SOURCE_DIR} ${PCRE_INCLUDE_DIRS} )
