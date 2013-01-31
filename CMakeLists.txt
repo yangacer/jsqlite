@@ -6,7 +6,7 @@ list (APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_mod )
 include (use_c++11)
 
 find_package ( JSONCC REQUIRED )
-find_package ( Boost COMPONENTS variant)
+find_package ( Boost )
 
 add_subdirectory ( jl_sqlite3 )
 
