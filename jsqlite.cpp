@@ -5,6 +5,57 @@
 
 namespace jsqlite {
 
+typedef int (*exec_cb_type)(void*,int,char**,char**);
+
+inline int 
+wait_if_busy(sqlite3 *db, char const *stmt, exec_cb_type cb, void* cb_arg, char** err_str)
+{
+  int ec=0;
+  while ( SQLITE_BUSY == (ec = sqlite3_exec(db,stmt,cb,cb_arg,err_str)) );
+  return ec;
+}
+
+// ---- transaction impl ----
+
+#define LOG_TRANS_(STMT) \
+{ \
+  char *err = 0; \
+  if(0 != (ec_ = wait_if_busy(db_, STMT, NULL, NULL, &err))) { \
+    logger_ << err << "\n"; \
+    sqlite3_free(err);  \
+    finalized_ = true; \
+  } \
+}
+
+transaction::transaction(sqlite3 *db, std::ostream &logger)
+: db_(db), finalized_(false), logger_(logger), ec_(0)
+{
+  LOG_TRANS_("BEGIN TRANSACTION;");
+}
+
+transaction::~transaction()
+{  rollback(); }
+
+bool transaction::commit()
+{
+  if(!finalized_) {
+    LOG_TRANS_("END TRANSACTION;");
+    finalized_ = true;
+  }
+  return ec_ == 0;
+}
+
+bool transaction::rollback()
+{
+  if(!finalized_) {
+    LOG_TRANS_("ROLLBACK TRANSACTION;");
+    finalized_ = true;
+  }
+  return ec_ == 0;
+}
+
+// ---- select impl ----
+
 int select_cb(void* result_arg, int col_num, char ** col_val, char **col_name)
 {
   json::array_t &result = *(json::array_t*)(result_arg);
@@ -26,9 +77,11 @@ int select_cb(void* result_arg, int col_num, char ** col_val, char **col_name)
 int select(json::array_t &result, sqlite3* db, std::string const &stmt, char **error)
 {
   int rc;
-  rc = sqlite3_exec(db, stmt.c_str(), &select_cb, (void*)&result, error);
+  rc = wait_if_busy(db, stmt.c_str(), &select_cb, (void*)&result, error);
   return rc;
 }
+
+// --- lit, col_names, col_values, and vector impl ----
 
 std::string lit(json::var_t const &variable)
 {  return boost::apply_visitor(gen_sql_insertable(),variable); }

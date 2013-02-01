@@ -22,6 +22,9 @@ int main()
   sqlite3_open("person.db", &db);
   sqlite3_enable_load_extension(db, 1);
   
+  sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS person (name, email TEXT PRIMARY KEY, age, connect);", NULL, NULL, &error);
+  PROMPT_ERROR(error);
+
   sqlite3_exec(db, "SELECT load_extension('js_sqlite3/libjl_sqlite3_regexp.so')", NULL, NULL, &error);
   PROMPT_ERROR(error);
 
@@ -38,8 +41,7 @@ int main()
     col_values(mbof(person).object())
     ;
 
-  std::cerr << stmt.str() << "\n";
-
+  cerr << stmt.str() << "\n";
   sqlite3_exec(db, stmt.str().c_str(), NULL, NULL, &error);
   
   PROMPT_ERROR(error);
@@ -51,7 +53,6 @@ int main()
     lit(mbof(person)["name"].var());
 
   cerr << stmt.str() << "\n";
-
   cerr << lit(mbof(person)["connect"].var()) << "\n";
 
   jsqlite::select(results, db, stmt.str(), &error);
@@ -61,5 +62,28 @@ int main()
   for( auto i = results.begin(); i != results.end(); ++i)
     json::pretty_print(std::cerr, *i);
 
+  // ---- transaction ----
+  while(1) {
+    transaction trans(db, cerr);
+
+    stmt.clear(); stmt.str("");
+    stmt << "INSERT INTO person (email, name) VALUES ('\"glory@gmail.com\"', '\"Glory\"');";  // valid insert
+
+    if(sqlite3_exec(db, stmt.str().c_str(), NULL, NULL, &error)) {
+      PROMPT_ERROR(error);
+      break; // transaction will rollback automatically
+    }
+    stmt.clear(); stmt.str("");
+    stmt << "INSERT INTO person (email, name) VALUES ('\"glory@gmail.com\"', '\"Glory\"');";  // invalid insert
+
+    if(sqlite3_exec(db, stmt.str().c_str(), NULL, NULL, &error)) {
+      PROMPT_ERROR(error);
+      break; // transaction will rollback automatically
+    }
+    trans.commit();
+    break;
+  }
+  
+  sqlite3_close(db);
   return 0;
 }

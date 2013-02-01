@@ -3,11 +3,25 @@
 
 #include <string>
 #include <vector>
+#include <ostream>
 #include "json/json.hpp"
 #include "jl_sqlite3/sqlite3.h"
 
 namespace jsqlite {
 namespace json = yangacer::json;
+
+struct transaction
+{
+  explicit transaction(sqlite3* db, std::ostream &logger);
+  ~transaction();
+  bool commit();
+  bool rollback();
+private:
+  sqlite3* db_;
+  bool finalized_;
+  std::ostream &logger_;
+  int ec_;
+};
 
 /**
  * Select rows from db according to statement
@@ -22,7 +36,6 @@ int select(json::array_t &result,
            sqlite3* db, 
            std::string const &stmt,
            char **error);
-
 /** 
  * Generate literal data from variable
  * @param variable
