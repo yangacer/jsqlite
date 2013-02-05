@@ -33,8 +33,8 @@ int main()
   mbof(person)["age"]     = 12u;
   mbof(person)["connect"] = json::array_t(2);
 
-  mbof(person)["connect"][0ul] = string("Yang Acer");
-  mbof(person)["connect"][1ul] = string("Cheng YY");
+  mbof(person)["connect"][(size_t)0ul] = string("Yang Acer");
+  mbof(person)["connect"][(size_t)1ul] = string("Cheng YY");
 
   stmt << "INSERT INTO person " << 
     col_names(mbof(person).object()) << " VALUES " << 
