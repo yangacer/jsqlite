@@ -62,14 +62,13 @@ int select_cb(void* result_arg, int col_num, char ** col_val, char **col_name)
   result.push_back(json::object_t());
   json::object_t &obj = mbof(result.back()).object();
   for(int i=0;i<col_num;i++) {
+    json::var_t &v = obj[col_name[i]];
     if(col_val[i]) {
       char const *beg = col_val[i];
       char const *end = beg + strlen(col_val[i]);
-      if(!json::phrase_parse(beg, end, obj[col_name[i]])) 
+      if(!json::phrase_parse(beg, end, v)) 
         result.pop_back();
-    } else {
-      obj[col_name[i]];
-    }
+    }  
   }
   return 0;
 }

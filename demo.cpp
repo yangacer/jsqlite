@@ -22,7 +22,7 @@ int main()
   sqlite3_open("person.db", &db);
   sqlite3_enable_load_extension(db, 1);
   
-  sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS person (name, email TEXT PRIMARY KEY, age, connect);", NULL, NULL, &error);
+  sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS person (name, email TEXT PRIMARY KEY, desc TEXT DEFAULT '\"\"', age, connect);", NULL, NULL, &error);
   PROMPT_ERROR(error);
 
   sqlite3_exec(db, "SELECT load_extension('js_sqlite3/libjl_sqlite3_regexp.so')", NULL, NULL, &error);
