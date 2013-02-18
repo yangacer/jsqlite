@@ -59,8 +59,16 @@ std::string col_names(json::object_t const &object);
  */
 std::string col_values(json::object_t const &object);
 
+/**
+ * Generate comma separated vector of **literalized** elements.
+ * @return "ele1,ele2, ..."
+ */
 std::string vector(json::array_t const &array);
 
+/**
+ * Generate comma separated vector of elements.
+ * @return "ele1, ele2, ..."
+ */
 std::string vector_cols(json::array_t const &array);
 
 } // namespace jsqlite
