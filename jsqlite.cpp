@@ -89,6 +89,8 @@ std::string col_names(json::object_t const &object)
 { 
   std::string result = "(";
   for(auto i = object.begin(); i != object.end(); ++i ) {
+    if( i->first.find(";") != std::string::npos ) 
+      return std::string(" invlid_column name ");
     if( i != object.begin() )
       result += ",";
     result += i->first;
@@ -124,6 +126,8 @@ std::string vector_cols(json::array_t const &array)
 {
   std::string result;
   for(auto i = array.begin(); i != array.end(); ++i ) {
+    if( cmbof(*i).string().find(";") != std::string::npos ) 
+      return std::string(" invlid_column name ");
     if( i != array.begin() )
       result += ",";
     result += cmbof(*i).string();
