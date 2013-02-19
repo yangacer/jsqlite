@@ -32,7 +32,7 @@ static void sqlite3_regexp( sqlite3_context *context, int argc, sqlite3_value **
   assert(argc == 2);
   char *pcre_err = NULL;
   int pcre_erroffset, pcre_errcode;
-  pcre *pattern = pcre_compile2((const char *) sqlite3_value_text(argv[0]), PCRE_UTF8, &pcre_errcode, (const char **) &pcre_err, &pcre_erroffset, NULL);
+  pcre *pattern = pcre_compile2((const char *) sqlite3_value_text(argv[0]), PCRE_CASELESS | PCRE_JAVASCRIPT_COMPAT| PCRE_UTF8, &pcre_errcode, (const char **) &pcre_err, &pcre_erroffset, NULL);
   if( pattern == NULL ) {
     // pcre error code 21 is out of memory as per pcreapi(3)
     if( pcre_errcode == 21 ) {
