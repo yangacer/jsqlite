@@ -10,4 +10,8 @@ target_link_libraries ( jl_sqlite3 dl)
 add_library ( jl_sqlite3_regexp SHARED regexp.c )
 target_link_libraries ( jl_sqlite3_regexp jl_sqlite3 ${PCRE_LIBRARIES} )
 
+add_executable ( jl_shell shell.c )
+target_link_libraries ( jl_shell jl_sqlite3 pthread)
+
 install ( TARGETS jl_sqlite3 jl_sqlite3_regexp DESTINATION lib )
+install ( TARGETS jl_shell DESTINATION bin )
