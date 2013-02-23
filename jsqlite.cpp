@@ -80,6 +80,54 @@ int select(json::array_t &result, sqlite3* db, std::string const &stmt, char **e
   return rc;
 }
 
+struct select_as_map_cbarg
+{
+  int key_column;
+  json::object_t *result;
+};
+
+int select_as_map_cb(void* result_arg, int col_num, char ** col_val, char **col_name)
+{
+  select_as_map_cbarg &cbarg = *((select_as_map_cbarg*)result_arg);
+  json::object_t &result = *cbarg.result;
+  int key_column = cbarg.key_column;
+
+  if( key_column < col_num && col_val[key_column]) {
+    char const *beg = col_val[key_column];
+    char const *end = beg + strlen(col_val[key_column]);
+    json::var_t key_col_value;
+    if(json::phrase_parse(beg, end, key_col_value)) {
+      std::string &key_col_str = mbof(key_col_value).string();
+      result[key_col_str] = json::object_t();
+      json::object_t &obj = mbof(result[key_col_str]).object();
+      for(int i=0;i<col_num;++i) {
+        if(col_val[i]) {
+          json::var_t &v = obj[col_name[i]];
+          beg = col_val[i];
+          end = beg + strlen(col_val[i]);
+          if(!json::phrase_parse(beg, end, v)) 
+            result.erase(key_col_str);
+        }
+      }
+    }
+  }
+  return 0;
+}
+
+int select_as_map(int key_column,
+                  json::object_t &result,
+                  sqlite3* db,
+                  std::string const &stmt,
+                  char **error)
+{
+  select_as_map_cbarg cbarg;
+  cbarg.key_column = key_column;
+  cbarg.result = &result;
+
+  int rc = wait_if_busy(db, stmt.c_str(), &select_as_map_cb, (void*)&cbarg, error);
+  return rc;
+}
+
 // --- lit, col_names, col_values, and vector impl ----
 
 std::string lit(json::var_t const &variable)

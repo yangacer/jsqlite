@@ -24,7 +24,7 @@ private:
 };
 
 /**
- * Select rows from db according to statement
+ * Select rows from db according to statement.
  * @param result 
  * @param db Valid sqlite3 db handle
  * @param stmt Statement
@@ -36,6 +36,21 @@ int select(json::array_t &result,
            sqlite3* db, 
            std::string const &stmt,
            char **error);
+
+/**
+ * Select rows as a map which uses values of specified column as its keys.
+ * @param result 
+ * @param db Valid sqlite3 db handle
+ * @param stmt Statement
+ * @param error Error string reported from sqlite3. It needs to be freed
+ * manually.
+ * @return SQLite3 error code
+ */
+int select_as_map(int key_column,
+                  json::object_t &result,
+                  sqlite3* db,
+                  std::string const &stmt,
+                  char **error);
 /** 
  * Generate literal data from variable
  * @param variable
