@@ -84,11 +84,21 @@ int main()
     break;
   }
   
+  // select_as_map boundary case
+  stmt.clear(); stmt.str("");
+  stmt << "SELECT * FROM person LIMIT 0;";
+  cerr << stmt.str() << "\n";
+  json::object_t obj_result;
+  jsqlite::select_as_map(0, obj_result, db, stmt.str(), &error);
+  PROMPT_ERROR(error);
+  assert(obj_result.empty());
+
+  // select_as_map regular case
   stmt.clear(); stmt.str("");
   stmt << "SELECT * FROM person;";
 
   cerr << stmt.str() << "\n";
-  json::object_t obj_result;
+  obj_result.clear();
   jsqlite::select_as_map(0, obj_result, db, stmt.str(), &error);
   PROMPT_ERROR(error);
   
