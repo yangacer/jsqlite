@@ -30,7 +30,7 @@ int main()
 
   mbof(person)["name"]    = string("DOD'OGIN");
   mbof(person)["email"]   = string("dog@nuweb.cc");
-  mbof(person)["age"]     = 12u;
+  mbof(person)["age"]     = 12l;
   mbof(person)["connect"] = json::array_t(2);
 
   mbof(person)["connect"](0) = string("Yang Acer");
