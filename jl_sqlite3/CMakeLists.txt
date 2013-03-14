@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 2.8)
 project (jl_sqlite3 C)
 
+add_definitions ( -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_FTS3_PARENTHESIS )
+
 find_package ( PCRE REQUIRED )
 include_directories ( ${PROJECT_SOURCE_DIR} ${PCRE_INCLUDE_DIRS} )
 
