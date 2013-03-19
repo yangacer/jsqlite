@@ -18,6 +18,9 @@ if ( OPENSSL_FOUND )
   include_directories ( ${OPENSSL_INCLUDE_DIR} )
   add_library ( jl_sqlite3_md5 SHARED md5.c )
   target_link_libraries ( jl_sqlite3_md5 jl_sqlite3 ${OPENSSL_LIBRARIES} )
+  
+  add_library ( jl_sqlite3_sha1 SHARED sha.c )
+  target_link_libraries ( jl_sqlite3_sha1 jl_sqlite3 ${OPENSSL_LIBRARIES} )
 endif()
 
 add_executable ( jl_shell shell.c )
