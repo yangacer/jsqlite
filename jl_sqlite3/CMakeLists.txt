@@ -28,3 +28,7 @@ target_link_libraries ( jl_shell jl_sqlite3 pthread)
 
 install ( TARGETS jl_sqlite3 jl_sqlite3_regexp DESTINATION lib )
 install ( TARGETS jl_shell DESTINATION bin )
+
+if ( OPENSSL_FOUND )
+  install ( TARGETS jl_sqlite3_sha1 jl_sqlite3_md5 DESTINATION lib )
+endif()
