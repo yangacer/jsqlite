@@ -18,7 +18,7 @@ static void sqlite3_md5( sqlite3_context *context, int argc, sqlite3_value **arg
   }
 
   char const *input = (char const*) sqlite3_value_text(argv[0]);
-  char output[33];
+  char output[35];
   char digest[17];
   int i=0;
 
@@ -28,9 +28,10 @@ static void sqlite3_md5( sqlite3_context *context, int argc, sqlite3_value **arg
   }
 
   for(i=0;i<16;++i)
-    sprintf(&output[i*2], "%02x", (unsigned char)digest[i]);
+    sprintf(&output[i*2+1], "%02x", (unsigned char)digest[i]);
 
-  sqlite3_result_text(context, output, 32, (void*)-1);
+  output[0] = output[33] = '"';
+  sqlite3_result_text(context, output, 34, (void*)-1);
 }
 
 int sqlite3_extension_init( sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi ) 
