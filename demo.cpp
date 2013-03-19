@@ -26,6 +26,7 @@ int main()
   PROMPT_ERROR(error);
 
   sqlite3_exec(db, "SELECT load_extension('js_sqlite3/libjl_sqlite3_regexp.so')", NULL, NULL, &error);
+  sqlite3_exec(db, "SELECT load_extension('js_sqlite3/libjl_sqlite3_md5.so')", NULL, NULL, &error);
   PROMPT_ERROR(error);
 
   mbof(person)["name"]    = string("DOD'OGIN");
