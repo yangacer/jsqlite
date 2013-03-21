@@ -22,7 +22,7 @@ static void sqlite3_md5( sqlite3_context *context, int argc, sqlite3_value **arg
   char digest[17];
   int i=0;
 
-  if(!MD5(input, strlen(input), (unsigned char*)digest)) {
+  if(!MD5((unsigned char const *)input, strlen(input), (unsigned char*)digest)) {
     sqlite3_result_null(context);
     return;
   }

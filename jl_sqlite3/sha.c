@@ -22,13 +22,13 @@ static void sqlite3_sha1( sqlite3_context *context, int argc, sqlite3_value **ar
   char digest[21];
   int i=0;
 
-  if(!SHA1(input, strlen(input), (unsigned char*)digest)) {
+  if(!SHA1((unsigned char const *)input, strlen(input), (unsigned char*)digest)) {
     sqlite3_result_null(context);
     return;
   }
 
   for(i=0;i<20;++i)
-    sprintf(&output[i*2+1], "%02x", (unsigned char)digest[i]);
+    sprintf(&output[1] + i*2, "%02x", (unsigned char)digest[i]);
 
   output[0] = output[41] = '"';
   sqlite3_result_text(context, output, 42, (void*)-1);
