@@ -9,7 +9,8 @@ include_directories ( ${PROJECT_SOURCE_DIR} ${PCRE_INCLUDE_DIRS} )
 find_package ( OpenSSL )
 
 add_library ( jl_sqlite3 SHARED sqlite3.c)
-target_link_libraries ( jl_sqlite3 dl)
+#set_target_properties ( jl_sqlite3 PROPERTIES COMPILE_FLAGS "-DSQLITE_ENABLE_ICU")
+target_link_libraries ( jl_sqlite3 dl )#icui18n icuio ) #icule iculx icutu icuuc icudata)
 
 add_library ( jl_sqlite3_regexp SHARED regexp.c )
 target_link_libraries ( jl_sqlite3_regexp jl_sqlite3 ${PCRE_LIBRARIES} )
