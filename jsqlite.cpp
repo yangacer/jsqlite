@@ -1,7 +1,7 @@
 #include "jsqlite.hpp"
 #include "gen.hpp"
 #include "boost/variant/apply_visitor.hpp"
-#include "json/accessor.hpp"
+#include "json/json.hpp"
 
 namespace jsqlite {
 

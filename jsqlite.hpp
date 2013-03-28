@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <ostream>
-#include "json/json.hpp"
+#include "json/variant.hpp"
 #include "jl_sqlite3/sqlite3.h"
 
 namespace jsqlite {

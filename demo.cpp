@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include "jl_sqlite3/sqlite3.h"
-#include "json/accessor.hpp"
+#include "json/json.hpp"
 #include "jsqlite.hpp"
 
 #define PROMPT_ERROR(ec) if(ec){\
