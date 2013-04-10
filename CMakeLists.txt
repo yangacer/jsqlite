@@ -23,4 +23,4 @@ target_link_libraries ( demo jsqlite )
 
 add_subdirectory ( tests )
 
-install ( TARGETS jsqlite DESTINATION lib )
+install ( TARGETS jsqlite utf8tok DESTINATION lib )
