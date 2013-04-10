@@ -13,7 +13,7 @@
 SQLITE_EXTENSION_INIT1
 
 #ifndef NDEBUG
-std::ofstream log;
+static std::ofstream log;
 #endif
 
 typedef struct utf8_tokenizer {
