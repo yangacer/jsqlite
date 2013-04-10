@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
-#include <fstream>
+//#include <fstream>
 #include "jl_sqlite3/sqlite3ext.h"
 #include "jl_sqlite3/fts3_tokenizer.h"
 #include "utf8.h"
@@ -10,7 +10,7 @@
 
 SQLITE_EXTENSION_INIT1
 
-std::ofstream log;
+//std::ofstream log;
 
 typedef struct utf8_tokenizer {
   sqlite3_tokenizer base;
@@ -56,7 +56,7 @@ int utf8Create(
   t = (utf8_tokenizer *) sqlite3_malloc(sizeof(*t));
   if( t==NULL ) return SQLITE_NOMEM;
   std::memset(t, 0, sizeof(*t));
-  log.open("utf8tok.log", std::ios::out | std::ios::binary);
+  //log.open("utf8tok.log", std::ios::out | std::ios::binary);
   *ppTokenizer = &t->base;
   return SQLITE_OK;
 }
@@ -67,8 +67,8 @@ int utf8Create(
 extern "C" 
 int utf8Destroy(sqlite3_tokenizer *pTokenizer){
   sqlite3_free(pTokenizer);
-  log.flush();
-  log.close();
+  //log.flush();
+  //log.close();
   return SQLITE_OK;
 }
 
@@ -85,7 +85,7 @@ int utf8Open(
   sqlite3_tokenizer_cursor **ppCursor    /* OUT: Tokenization cursor */
 ){
   utf8_tokenizer_cursor *c;
-  log << "utf8Open\n";
+  //log << "utf8Open\n";
   c = (utf8_tokenizer_cursor *) sqlite3_malloc(sizeof(*c));
   if( c==NULL ) return SQLITE_NOMEM;
 
@@ -112,7 +112,7 @@ int utf8Open(
 */
 extern "C" 
 int utf8Close(sqlite3_tokenizer_cursor *pCursor){
-  log << "utf8Close\n";
+  //log << "utf8Close\n";
   utf8_tokenizer_cursor *c = (utf8_tokenizer_cursor *) pCursor;
   sqlite3_free(c->pToken);
   sqlite3_free(c);
@@ -173,9 +173,9 @@ int utf8Next(
         *piEndOffset = c->iOffset + n;
         *piPosition = c->iToken++;
         c->iOffset += n;
-        log << "token: ";
-        log.write(c->pToken, n);
-        log << "\n";
+        //log << "token: ";
+        //log.write(c->pToken, n);
+        //log << "\n";
         return SQLITE_OK;
       }
       // XXX NULL byte?
@@ -198,9 +198,9 @@ int utf8Next(
         *piEndOffset = c->iOffset + n;
         *piPosition = c->iToken++;
         c->iOffset += n;
-        log << "token: ";
-        log.write(c->pToken, n);
-        log << "\n";
+        //log << "token: ";
+        //log.write(c->pToken, n);
+        //log << "\n";
         return SQLITE_OK;
       }
     }
