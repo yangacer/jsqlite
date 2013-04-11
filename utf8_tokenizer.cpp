@@ -154,71 +154,69 @@ int utf8Next(
   size_t unused = end_it - utf8::find_invalid(beg_it, end_it); // evaluate unused size
   end_it -= unused;
   utf8::unchecked::iterator<char const*> utf8_beg_it(beg_it), utf8_end_it(end_it);
-  if(utf8_beg_it.base() <= utf8_end_it.base()) {
-    //while(utf8_beg_it != utf8_end_it) {
-      // skip garbage
-      while( utf8_beg_it != utf8_end_it && ( is_garbage(*utf8_beg_it.base()) || is_garbage(*utf8_beg_it))) 
-        ++utf8_beg_it;
-      c->iOffset += utf8_beg_it.base() - beg_it;
-      // non garbage ascii code
-      auto token_beg_it = utf8_beg_it;
-      while( utf8_beg_it != utf8_end_it && 
-             0 <= *utf8_beg_it.base()  && 
-             !is_garbage(*utf8_beg_it.base())) 
-      {
-          ++utf8_beg_it;
+  if(utf8_beg_it.base() < utf8_end_it.base()) {
+    // skip garbage
+    while( utf8_beg_it != utf8_end_it && ( is_garbage(*utf8_beg_it.base()) || is_garbage(*utf8_beg_it))) 
+      ++utf8_beg_it;
+    c->iOffset += utf8_beg_it.base() - beg_it;
+    // non garbage ascii code
+    auto token_beg_it = utf8_beg_it;
+    while( utf8_beg_it != utf8_end_it && 
+           0 <= *utf8_beg_it.base()  && 
+           !is_garbage(*utf8_beg_it.base())) 
+    {
+      ++utf8_beg_it;
+    }
+    size_t n = utf8_beg_it.base() - token_beg_it.base();
+    if( n > 0 ) { 
+      char *new_token;
+      new_token = (char*)sqlite3_realloc(c->pToken, n);
+      if(!new_token) return SQLITE_NOMEM;
+      c->pToken = new_token;
+      // normalization
+      for(int i=0; i<n; i++) {
+        unsigned char ch = token_beg_it.base()[i];
+        c->pToken[i] = (char)((ch>='A' && ch<='Z') ? ch-'A'+'a' : ch);
       }
-      size_t n = utf8_beg_it.base() - token_beg_it.base();
-      if( n > 0 ) { 
-        char *new_token;
-        new_token = (char*)sqlite3_realloc(c->pToken, n);
-        if(!new_token) return SQLITE_NOMEM;
-        c->pToken = new_token;
-        // normalization
-        for(int i=0; i<n; i++) {
-          unsigned char ch = token_beg_it.base()[i];
-          c->pToken[i] = (char)((ch>='A' && ch<='Z') ? ch-'A'+'a' : ch);
-        }
-        *ppToken = c->pToken;
-        *pnBytes = n;
-        *piStartOffset = c->iOffset;
-        *piEndOffset = c->iOffset + n;
-        *piPosition = c->iToken++;
-        c->iOffset += n;
+      *ppToken = c->pToken;
+      *pnBytes = n;
+      *piStartOffset = c->iOffset;
+      *piEndOffset = c->iOffset + n;
+      *piPosition = c->iToken++;
+      c->iOffset += n;
 #ifndef NDEBUG
-        log << "token: ";
-        log.write(c->pToken, n);
-        log << "\n";
+      log << "token: ";
+      log.write(c->pToken, n);
+      log << "\n";
 #endif
-        return SQLITE_OK;
-      }
-      // XXX NULL byte?
-      // non garbage unicode
-      while( utf8_beg_it != utf8_end_it &&
-             *utf8_beg_it.base() < 0 &&
-             !is_garbage(*utf8_beg_it))
-      {
-        // XXX Index *every* unicode word
-        char* new_token;
-        size_t n = code_size(*utf8_beg_it);
-        new_token = (char*)sqlite3_realloc(c->pToken, n);
-        if(!new_token) return SQLITE_NOMEM;
-        std::memcpy(new_token, utf8_beg_it.base(), n);
-        c->pToken = new_token;
-        *ppToken = c->pToken;
-        *pnBytes = n;
-        *piStartOffset = c->iOffset;
-        *piEndOffset = c->iOffset + n;
-        *piPosition = c->iToken++;
-        c->iOffset += n;
+      return SQLITE_OK;
+    }
+    // XXX NULL byte?
+    // non garbage unicode
+    while( utf8_beg_it != utf8_end_it &&
+           *utf8_beg_it.base() < 0 &&
+           !is_garbage(*utf8_beg_it))
+    {
+      // XXX Index *every* unicode word
+      char* new_token;
+      size_t n = code_size(*utf8_beg_it);
+      new_token = (char*)sqlite3_realloc(c->pToken, n);
+      if(!new_token) return SQLITE_NOMEM;
+      std::memcpy(new_token, utf8_beg_it.base(), n);
+      c->pToken = new_token;
+      *ppToken = c->pToken;
+      *pnBytes = n;
+      *piStartOffset = c->iOffset;
+      *piEndOffset = c->iOffset + n;
+      *piPosition = c->iToken++;
+      c->iOffset += n;
 #ifndef NDEBUG
-        log << "token: ";
-        log.write(c->pToken, n);
-        log << "\n";
+      log << "token: ";
+      log.write(c->pToken, n);
+      log << "\n";
 #endif
-        return SQLITE_OK;
-      }
-    //}
+      return SQLITE_OK;
+    }
   }
   return SQLITE_DONE;
 }
