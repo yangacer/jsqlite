@@ -155,10 +155,11 @@ int utf8Next(
   end_it -= unused;
   utf8::unchecked::iterator<char const*> utf8_beg_it(beg_it), utf8_end_it(end_it);
   if(utf8_beg_it.base() <= utf8_end_it.base()) {
-    while(utf8_beg_it != utf8_end_it) {
+    //while(utf8_beg_it != utf8_end_it) {
       // skip garbage
       while( utf8_beg_it != utf8_end_it && ( is_garbage(*utf8_beg_it.base()) || is_garbage(*utf8_beg_it))) 
         ++utf8_beg_it;
+      c->iOffset += utf8_beg_it.base() - beg_it;
       // non garbage ascii code
       auto token_beg_it = utf8_beg_it;
       while( utf8_beg_it != utf8_end_it && 
@@ -178,7 +179,6 @@ int utf8Next(
           unsigned char ch = token_beg_it.base()[i];
           c->pToken[i] = (char)((ch>='A' && ch<='Z') ? ch-'A'+'a' : ch);
         }
-        c->iOffset += token_beg_it.base() - beg_it;
         *ppToken = c->pToken;
         *pnBytes = n;
         *piStartOffset = c->iOffset;
@@ -205,7 +205,6 @@ int utf8Next(
         if(!new_token) return SQLITE_NOMEM;
         std::memcpy(new_token, utf8_beg_it.base(), n);
         c->pToken = new_token;
-        c->iOffset += token_beg_it.base() - beg_it;
         *ppToken = c->pToken;
         *pnBytes = n;
         *piStartOffset = c->iOffset;
@@ -219,7 +218,7 @@ int utf8Next(
 #endif
         return SQLITE_OK;
       }
-    }
+    //}
   }
   return SQLITE_DONE;
 }
