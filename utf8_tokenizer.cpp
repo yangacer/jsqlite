@@ -42,7 +42,7 @@ static int code_size(uint32_t code)
 }
 
 inline bool is_garbage(int c)
-{ return std::iscntrl(c) || std::isspace(c) || std::isblank(c) || std::ispunct(c); }
+{ return std::iscntrl(c) || std::isspace(c) || std::isblank(c); }
 
 inline bool is_garbage(uint32_t code)
 { return code > 0xff00u || ( code > 127 && code < 0x3fffu); }
@@ -168,12 +168,12 @@ int utf8Next(
       ++utf8_beg_it;
     }
     size_t n = utf8_beg_it.base() - token_beg_it.base();
-    if( n > 0 ) { 
+    if( n > 0 && !std::ispunct(*token_beg_it.base()) ) {
       char *new_token;
       new_token = (char*)sqlite3_realloc(c->pToken, n);
       if(!new_token) return SQLITE_NOMEM;
       c->pToken = new_token;
-      // normalization
+      // normalize to lowercase
       for(int i=0; i<n; i++) {
         unsigned char ch = token_beg_it.base()[i];
         c->pToken[i] = (char)((ch>='A' && ch<='Z') ? ch-'A'+'a' : ch);
@@ -190,7 +190,7 @@ int utf8Next(
       log << "\n";
 #endif
       return SQLITE_OK;
-    }
+    } 
     // XXX NULL byte?
     // non garbage unicode
     while( utf8_beg_it != utf8_end_it &&
