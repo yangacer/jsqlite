@@ -67,7 +67,7 @@ int utf8Create(
   *ppTokenizer = &t->base;
   t->ascii_garbage[0] = 0;
   for(int i=1; i<0x80; ++i) {
-    t->ascii_garbage[i] = std::iscntrl(i) || std::isspace(i) || std::isblank(i) || std::ispunct(i);
+    t->ascii_garbage[i] = (std::iscntrl(i) || std::isspace(i) || std::isblank(i) || std::ispunct(i)) ? 1 : 0;
   }
   return SQLITE_OK;
 }
