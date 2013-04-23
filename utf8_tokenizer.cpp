@@ -43,7 +43,7 @@ static int code_size(uint32_t code)
 }
 
 inline bool is_garbage(utf8_tokenizer *t, int c)
-{ return t->ascii_garbage[c]; }
+{ return t->ascii_garbage[c] == 1; }
 
 inline bool is_garbage(uint32_t code)
 { return code > 0xff00u || ( code > 127 && code < 0x3fffu); }
@@ -64,11 +64,11 @@ int utf8Create(
 #ifndef NDEBUG
   log.open("utf8tok.log", std::ios::out | std::ios::binary);
 #endif
-  *ppTokenizer = &t->base;
-  t->ascii_garbage[0] = 0;
+  t->ascii_garbage[0] = true;
   for(int i=1; i<0x80; ++i) {
     t->ascii_garbage[i] = (std::iscntrl(i) || std::isspace(i) || std::isblank(i) || std::ispunct(i)) ? 1 : 0;
   }
+  *ppTokenizer = &t->base;
   return SQLITE_OK;
 }
 
