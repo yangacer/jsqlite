@@ -18,6 +18,7 @@ static std::ofstream log;
 
 typedef struct utf8_tokenizer {
   sqlite3_tokenizer base;
+  char ascii_garbage[128];
 } utf8_tokenizer;
 
 typedef struct utf8_tokenizer_cursor {
@@ -41,8 +42,8 @@ static int code_size(uint32_t code)
   return 1;
 }
 
-inline bool is_garbage(int c)
-{ return std::iscntrl(c) || std::isspace(c) || std::isblank(c) || std::ispunct(c); }
+inline bool is_garbage(utf8_tokenizer *t, int c)
+{ return t->ascii_garbage[c]; }
 
 inline bool is_garbage(uint32_t code)
 { return code > 0xff00u || ( code > 127 && code < 0x3fffu); }
@@ -64,6 +65,10 @@ int utf8Create(
   log.open("utf8tok.log", std::ios::out | std::ios::binary);
 #endif
   *ppTokenizer = &t->base;
+  t->ascii_garbage[0] = 0;
+  for(int i=1; i<0x80; ++i) {
+    t->ascii_garbage[i] = std::iscntrl(i) || std::isspace(i) || std::isblank(i) || std::ispunct(i);
+  }
   return SQLITE_OK;
 }
 
@@ -156,14 +161,14 @@ int utf8Next(
   utf8::unchecked::iterator<char const*> utf8_beg_it(beg_it), utf8_end_it(end_it);
   if(utf8_beg_it.base() < utf8_end_it.base()) {
     // skip garbage
-    while( utf8_beg_it != utf8_end_it && ( is_garbage(*utf8_beg_it.base()) || is_garbage(*utf8_beg_it))) 
+    while( utf8_beg_it != utf8_end_it && ( is_garbage(t, *utf8_beg_it.base()) || is_garbage(*utf8_beg_it))) 
       ++utf8_beg_it;
     c->iOffset += utf8_beg_it.base() - beg_it;
     // non garbage ascii code
     auto token_beg_it = utf8_beg_it;
     while( utf8_beg_it != utf8_end_it && 
            0 <= *utf8_beg_it.base()  && 
-           !is_garbage(*utf8_beg_it.base())) 
+           !is_garbage(t, *utf8_beg_it.base())) 
     {
       ++utf8_beg_it;
     }
