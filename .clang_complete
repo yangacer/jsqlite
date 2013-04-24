@@ -1,1 +1,1 @@
--I ./sqlite3 -I ./JSON-CC
+-I ./sqlite3 -I ./JSON-CC -I /opt/include

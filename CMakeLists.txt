@@ -15,8 +15,10 @@ include_directories ( js_sqlite3 ${Boost_INCLUDE_DIRS} ${JSONCC_INCLUDE_DIRS} )
 add_library ( jsqlite SHARED jsqlite.cpp gen.cpp ) #where.cpp)
 target_link_libraries ( jsqlite ${JSONCC_LIBRARIES} pthread jl_sqlite3)
 
-add_library ( utf8tok SHARED utf8_tokenizer.cpp )
+add_library ( utf8tok SHARED utf8_tokenizer.cpp unihan.cpp)
 target_link_libraries ( jl_sqlite3 )
+
+add_executable ( unihan unihan.cpp unihan_tool.cpp)
 
 add_executable ( demo demo.cpp )
 target_link_libraries ( demo jsqlite )
