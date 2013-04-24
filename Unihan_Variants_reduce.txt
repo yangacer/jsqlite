@@ -244,7 +244,7 @@ U+4E61	kTraditionalVariant	U+9109
 U+4E66	kTraditionalVariant	U+66F8
 U+4E70	kTraditionalVariant	U+8CB7
 U+4E71	kTraditionalVariant	U+4E82
-U+4E7E	kSimplifiedVariant	U+5E72
+U+4E7E	kSimplifiedVariant	U+5E72 U+5E72
 U+4E82	kSimplifiedVariant	U+4E71
 U+4E89	kTraditionalVariant	U+722D
 U+4E8E	kTraditionalVariant	U+65BC
@@ -776,7 +776,7 @@ U+58FC	kSimplifiedVariant	U+58F8
 U+58FD	kSimplifiedVariant	U+5BFF
 U+5904	kTraditionalVariant	U+8655
 U+5907	kTraditionalVariant	U+5099
-U+590D	kTraditionalVariant	U+5FA9 U+8907 U+8986
+U+590D	kTraditionalVariant	U+5FA9 U+8907
 U+591F	kTraditionalVariant	U+5920
 U+5920	kSimplifiedVariant	U+591F
 U+5922	kSimplifiedVariant	U+68A6
@@ -991,8 +991,8 @@ U+5E5F	kSimplifiedVariant	U+5E1C
 U+5E63	kSimplifiedVariant	U+5E01
 U+5E6B	kSimplifiedVariant	U+5E2E
 U+5E6C	kSimplifiedVariant	U+5E31
-U+5E72	kTraditionalVariant	U+4E7E U+5E79
-U+5E76	kTraditionalVariant	U+4E26 U+4F75
+U+5E72	kTraditionalVariant	U+4E7E U+5E72
+U+5E76	kTraditionalVariant	U+4E26
 U+5E79	kSimplifiedVariant	U+5E72
 U+5E7A	kSimplifiedVariant	U+4E48
 U+5E7E	kSimplifiedVariant	U+51E0
@@ -3128,7 +3128,6 @@ U+896C	kSimplifiedVariant	U+4653
 U+896F	kSimplifiedVariant	U+886C
 U+8972	kSimplifiedVariant	U+88AD
 U+8974	kSimplifiedVariant	U+8955
-U+8986	kSimplifiedVariant	U+590D
 U+898B	kSimplifiedVariant	U+89C1
 U+898E	kSimplifiedVariant	U+89C3
 U+898F	kSimplifiedVariant	U+89C4
@@ -4821,7 +4820,7 @@ U+9914	kSimplifiedVariant	U+2B5E6
 U+9915	kSimplifiedVariant	U+9982
 U+9916	kSimplifiedVariant	U+997E
 U+9917	kSimplifiedVariant	U+2B5E7
-U+9918	kSimplifiedVariant	U+4F59 U+9980
+U+9918	kSimplifiedVariant	U+9980
 U+991A	kSimplifiedVariant	U+80B4
 U+991B	kSimplifiedVariant	U+9984
 U+991C	kSimplifiedVariant	U+9983

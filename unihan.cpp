@@ -1,7 +1,6 @@
 #include "unihan.hpp"
 #include <fstream>
 #include <sstream>
-#include <iostream>
 #include <iterator>
 #include <cstring>
 #include "utf8.h"
@@ -21,6 +20,8 @@ variant::variant(char const *dictionary)
     boost::uint32_t key = strtoul(buf.c_str()+2, 0, 16);
     sin >> buf >> buf;
     boost::uint32_t value = strtoul(buf.c_str()+2, 0, 16);
+    if( sin >> buf ) // one-to-many mapping is ignored
+      continue;
     auto range = equal_range(key);
     bool dup = false;
     for(auto i = range.first; i != range.second;++i) {
