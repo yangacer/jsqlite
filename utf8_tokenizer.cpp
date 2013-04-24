@@ -136,6 +136,10 @@ int utf8Close(sqlite3_tokenizer_cursor *pCursor){
   return SQLITE_OK;
 }
 
+enum utf8TokenizeMode {
+  index_mode, query_mode
+};
+
 /*
 ** Extract the next token from a tokenization cursor.  The cursor must
 ** have been opened by a prior call to utf8Open().
@@ -151,10 +155,22 @@ int utf8Next(
 ){
   utf8_tokenizer_cursor *c = (utf8_tokenizer_cursor *) pCursor;
   utf8_tokenizer *t = (utf8_tokenizer *) pCursor->pTokenizer;
-  //unsigned char *p = (unsigned char *)c->pInput;
+  utf8TokenizeMode mode;
+  // Use a char to determine a tokenizing is applied to index or query
+  // i.e. 
+  // '"q中文 查詢"' -> query mode
+  // '"i中文 索引"' -> index mode
+  // XXX This is not for general use but for nucs specific
+  if(*(c->pInput +1) == 'q')
+    mode = query_mode;
+  else if(*(c->pInput+1) == 'i')
+    mode = index_mode;
+  else
+    return SQLITE_MISUSE;
+
   char const
-    *beg_it = c->pInput + c->iOffset,
-    *end_it = c->pInput + c->nBytes;
+    *beg_it = c->pInput + 2 + c->iOffset,
+    *end_it = c->pInput + 2 + c->nBytes;
 
   size_t unused = end_it - utf8::find_invalid(beg_it, end_it); // evaluate unused size
   end_it -= unused;
