@@ -18,8 +18,6 @@ target_link_libraries ( jsqlite ${JSONCC_LIBRARIES} pthread jl_sqlite3)
 add_library ( utf8tok SHARED utf8_tokenizer.cpp unihan.cpp)
 target_link_libraries ( jl_sqlite3 )
 
-add_executable ( unihan unihan.cpp unihan_tool.cpp)
-
 add_executable ( demo demo.cpp )
 target_link_libraries ( demo jsqlite )
 
