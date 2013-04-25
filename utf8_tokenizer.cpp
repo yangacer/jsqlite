@@ -1,3 +1,4 @@
+//#include "utf8_tokenizer.hpp"
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
@@ -48,6 +49,14 @@ inline bool is_garbage(utf8_tokenizer *t, int c)
 inline bool is_garbage(uint32_t code)
 { return code > 0xff00u || ( code > 127 && code < 0x3fffu); }
 
+static utf8_tokenizer *utf8_tokenizer_ptr = 0;
+
+extern "C"
+utf8_tokenizer* utf8_tokenizer_get_ptr()
+{
+  return utf8_tokenizer_ptr;
+}
+
 /*
 ** Create a new tokenizer instance.
 */
@@ -56,7 +65,7 @@ int utf8Create(
   int argc, const char * const *argv,
   sqlite3_tokenizer **ppTokenizer
 ){
-  utf8_tokenizer *t;
+  utf8_tokenizer *t ;
 
   t = (utf8_tokenizer *) sqlite3_malloc(sizeof(*t));
   if( t==NULL ) return SQLITE_NOMEM;
@@ -69,6 +78,7 @@ int utf8Create(
     t->ascii_garbage[i] = (std::iscntrl(i) || std::isspace(i) || std::isblank(i) || std::ispunct(i)) ? 1 : 0;
   }
   *ppTokenizer = &t->base;
+  utf8_tokenizer_ptr = t;
   return SQLITE_OK;
 }
 
@@ -136,10 +146,6 @@ int utf8Close(sqlite3_tokenizer_cursor *pCursor){
   return SQLITE_OK;
 }
 
-enum utf8TokenizeMode {
-  index_mode, query_mode
-};
-
 /*
 ** Extract the next token from a tokenization cursor.  The cursor must
 ** have been opened by a prior call to utf8Open().
@@ -155,22 +161,10 @@ int utf8Next(
 ){
   utf8_tokenizer_cursor *c = (utf8_tokenizer_cursor *) pCursor;
   utf8_tokenizer *t = (utf8_tokenizer *) pCursor->pTokenizer;
-  utf8TokenizeMode mode;
-  // Use a char to determine a tokenizing is applied to index or query
-  // i.e. 
-  // '"q中文 查詢"' -> query mode
-  // '"i中文 索引"' -> index mode
-  // XXX This is not for general use but for nucs specific
-  if(*(c->pInput +1) == 'q')
-    mode = query_mode;
-  else if(*(c->pInput+1) == 'i')
-    mode = index_mode;
-  else
-    return SQLITE_MISUSE;
 
   char const
-    *beg_it = c->pInput + 2 + c->iOffset,
-    *end_it = c->pInput + 2 + c->nBytes;
+    *beg_it = c->pInput + c->iOffset,
+    *end_it = c->pInput + c->nBytes;
 
   size_t unused = end_it - utf8::find_invalid(beg_it, end_it); // evaluate unused size
   end_it -= unused;
