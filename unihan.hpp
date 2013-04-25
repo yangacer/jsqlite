@@ -16,9 +16,8 @@ public:
   variant(char const *dictionary);
   boost::uint32_t operator()(boost::uint32_t code_point);
   std::string operator()(
-    std::string::const_iterator first, 
-    std::string::const_iterator last, 
-    size_t &remain);
+    std::string::const_iterator first, std::string::const_iterator last, size_t &remain);
+  std::string operator()(char const *first, char const *last, size_t &remain);
   using super_::equal_range;
 };
 

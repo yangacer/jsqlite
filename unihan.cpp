@@ -56,3 +56,18 @@ std::string variant::operator()(string::const_iterator first, string::const_iter
   }
   return move(rt);
 }
+
+std::string variant::operator()(char const *first, char const *last, size_t &remain)
+{
+  char const *end_it = utf8::find_invalid(first, last);
+  utf8::unchecked::iterator<char const*> beg(&*first), end(&*end_it);
+  remain = last - end_it;
+  string rt;
+  for(;beg != end; ++beg) {
+    boost::uint32_t converted = (*this)(*beg);
+    if(!converted) 
+      converted = *beg;
+    utf8::unchecked::append(converted, back_inserter(rt));
+  }
+  return move(rt);
+}

@@ -1,0 +1,6 @@
+#ifndef JL_SQLITE3_CONFIG_H_
+#define JL_SQLITE3_CONFIG_H_
+
+#define PREFIX "@CMAKE_INSTALL_PREFIX@"
+
+#endif
