@@ -25,7 +25,8 @@ void sqlite3_unihan( sqlite3_context *context, int argc, sqlite3_value **argv )
     return;
   }
   size_t ignore;
-  std::string output = input + vmap(input+1, input + strlen(input)-1, ignore);
+  std::string output = input;
+  output += " OR " + vmap(input, input + strlen(input), ignore);
   sqlite3_result_text(context, output.c_str(), output.size(), reinterpret_cast<void(*)(void*)>(-1));
 }
 

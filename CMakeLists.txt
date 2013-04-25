@@ -4,6 +4,7 @@ project ( jsqlite )
 
 list (APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_mod )
 include (use_c++11)
+include (rpath)
 
 find_package ( JSONCC REQUIRED )
 find_package ( Boost )
@@ -19,11 +20,14 @@ add_library ( utf8tok SHARED utf8_tokenizer.cpp )
 target_link_libraries ( jl_sqlite3 )
 
 add_library ( unihan SHARED unihan.cpp )
+add_executable ( uhcv unihan_tool.cpp )
+target_link_libraries ( uhcv unihan )
 
 add_executable ( demo demo.cpp )
 target_link_libraries ( demo jsqlite )
 
 add_subdirectory ( tests )
 
+install ( TARGETS uhcv DESTINATION bin )
 install ( TARGETS jsqlite utf8tok unihan DESTINATION lib )
 install ( FILES Unihan_Variants_reduce.txt DESTINATION share )
