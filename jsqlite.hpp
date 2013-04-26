@@ -58,7 +58,7 @@ int select_as_map(int key_column,
  * @remark Quote and escap will be applied according to
  * type of a variable automatically.
  */
-std::string lit(json::var_t const &variable);
+std::string lit(json::var_t const &variable, char quote='\'');
 
 /**
  * Generate column names

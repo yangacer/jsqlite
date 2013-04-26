@@ -130,8 +130,8 @@ int select_as_map(int key_column,
 
 // --- lit, col_names, col_values, and vector impl ----
 
-std::string lit(json::var_t const &variable)
-{  return boost::apply_visitor(gen_sql_insertable(),variable); }
+std::string lit(json::var_t const &variable, char quote)
+{  return boost::apply_visitor(gen_sql_insertable(quote),variable); }
 
 std::string col_names(json::object_t const &object)
 { 
