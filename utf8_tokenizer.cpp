@@ -146,6 +146,17 @@ int utf8Close(sqlite3_tokenizer_cursor *pCursor){
   return SQLITE_OK;
 }
 
+template <typename Iter>
+Iter rfind_invalid(Iter beg, Iter end)
+{
+  if( end <= beg ) return beg;
+  Iter i = end;
+  --i;
+  while( *i >> 7 && (*i >> 6) != 3 )
+    --i;
+  return utf8::find_invalid(i, end);
+}
+
 /*
 ** Extract the next token from a tokenization cursor.  The cursor must
 ** have been opened by a prior call to utf8Open().
@@ -166,7 +177,7 @@ int utf8Next(
     *beg_it = c->pInput + c->iOffset,
     *end_it = c->pInput + c->nBytes;
 
-  size_t unused = end_it - utf8::find_invalid(beg_it, end_it); // evaluate unused size
+  size_t unused = end_it - rfind_invalid(beg_it, end_it); // evaluate unused size
   end_it -= unused;
   utf8::unchecked::iterator<char const*> utf8_beg_it(beg_it), utf8_end_it(end_it);
   if(utf8_beg_it.base() < utf8_end_it.base()) {
