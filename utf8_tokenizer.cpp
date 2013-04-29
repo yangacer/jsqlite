@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <cassert>
 #ifndef NDEBUG
 #include <fstream>
 #endif
@@ -146,6 +147,7 @@ int utf8Close(sqlite3_tokenizer_cursor *pCursor){
   return SQLITE_OK;
 }
 
+/*
 template <typename Iter>
 Iter rfind_invalid(Iter beg, Iter end)
 {
@@ -156,6 +158,7 @@ Iter rfind_invalid(Iter beg, Iter end)
     --i;
   return utf8::find_invalid(i, end);
 }
+*/
 
 /*
 ** Extract the next token from a tokenization cursor.  The cursor must
@@ -177,8 +180,10 @@ int utf8Next(
     *beg_it = c->pInput + c->iOffset,
     *end_it = c->pInput + c->nBytes;
 
-  size_t unused = 0;//end_it - rfind_invalid(beg_it, end_it); // evaluate unused size
-  //end_it -= unused;
+  size_t unused = end_it - utf8::find_invalid(beg_it, end_it); // evaluate unused size
+  end_it -= unused;
+  assert(unused == 0 && "not aligned input");
+
   utf8::unchecked::iterator<char const*> utf8_beg_it(beg_it), utf8_end_it(end_it);
   if(utf8_beg_it.base() < utf8_end_it.base()) {
     // skip garbage
