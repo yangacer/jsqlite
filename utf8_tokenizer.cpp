@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cassert>
-#ifndef NDEBUG
+#ifdef UTF8_TOK_DEBUG_
 #include <fstream>
 #endif
 #include "jl_sqlite3/sqlite3ext.h"
@@ -14,7 +14,7 @@
 
 SQLITE_EXTENSION_INIT1
 
-#ifndef NDEBUG
+#ifdef UTF8_TOK_DEBUG_
 static std::ofstream log;
 #endif
 
@@ -71,7 +71,7 @@ int utf8Create(
   t = (utf8_tokenizer *) sqlite3_malloc(sizeof(*t));
   if( t==NULL ) return SQLITE_NOMEM;
   std::memset(t, 0, sizeof(*t));
-#ifndef NDEBUG
+#ifdef UTF8_TOK_DEBUG_
   log.open("utf8tok.log", std::ios::out | std::ios::binary);
 #endif
   t->ascii_garbage[0] = true;
@@ -89,7 +89,7 @@ int utf8Create(
 extern "C" 
 int utf8Destroy(sqlite3_tokenizer *pTokenizer){
   sqlite3_free(pTokenizer);
-#ifndef NDEBUG
+#ifdef UTF8_TOK_DEBUG_
   log.flush();
   log.close();
 #endif
@@ -109,7 +109,7 @@ int utf8Open(
   sqlite3_tokenizer_cursor **ppCursor    /* OUT: Tokenization cursor */
 ){
   utf8_tokenizer_cursor *c;
-#ifndef NDEBUG
+#ifdef UTF8_TOK_DEBUG_
   log << "utf8Open\n";
 #endif
   c = (utf8_tokenizer_cursor *) sqlite3_malloc(sizeof(*c));
@@ -138,7 +138,7 @@ int utf8Open(
 */
 extern "C" 
 int utf8Close(sqlite3_tokenizer_cursor *pCursor){
-#ifndef NDEBUG
+#ifdef UTF8_TOK_DEBUG_
   log << "utf8Close\n";
 #endif
   utf8_tokenizer_cursor *c = (utf8_tokenizer_cursor *) pCursor;
@@ -215,7 +215,7 @@ int utf8Next(
       *piEndOffset = c->iOffset + n;
       *piPosition = c->iToken++;
       c->iOffset += n;
-#ifndef NDEBUG
+#ifdef UTF8_TOK_DEBUG_
       log << "token: ";
       log.write(c->pToken, n);
       log << "\n";
@@ -241,7 +241,7 @@ int utf8Next(
       *piEndOffset = c->iOffset + n;
       *piPosition = c->iToken++;
       c->iOffset += n;
-#ifndef NDEBUG
+#ifdef UTF8_TOK_DEBUG_
       log << "token: ";
       log.write(c->pToken, n);
       log << "\n";
