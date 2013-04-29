@@ -152,7 +152,7 @@ Iter rfind_invalid(Iter beg, Iter end)
   if( end <= beg ) return beg;
   Iter i = end;
   --i;
-  while( *i >> 7 && (*i >> 6) != 3 )
+  while( i > beg && *i >> 7 && (*i >> 6) != 3 )
     --i;
   return utf8::find_invalid(i, end);
 }
