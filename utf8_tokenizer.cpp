@@ -177,8 +177,8 @@ int utf8Next(
     *beg_it = c->pInput + c->iOffset,
     *end_it = c->pInput + c->nBytes;
 
-  size_t unused = end_it - rfind_invalid(beg_it, end_it); // evaluate unused size
-  end_it -= unused;
+  size_t unused = 0;//end_it - rfind_invalid(beg_it, end_it); // evaluate unused size
+  //end_it -= unused;
   utf8::unchecked::iterator<char const*> utf8_beg_it(beg_it), utf8_end_it(end_it);
   if(utf8_beg_it.base() < utf8_end_it.base()) {
     // skip garbage
