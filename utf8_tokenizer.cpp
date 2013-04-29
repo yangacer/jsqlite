@@ -179,7 +179,7 @@ int utf8Next(
   char const
     *beg_it = c->pInput + c->iOffset,
     *end_it = c->pInput + c->nBytes;
-#ifndef NDBUG
+#ifdef UTF8_TOK_DEBUG_
   size_t unused = end_it - utf8::find_invalid(beg_it, end_it); // evaluate unused size
   end_it -= unused;
   assert(unused == 0 && "not aligned input");
