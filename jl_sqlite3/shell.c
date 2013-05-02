@@ -36,6 +36,8 @@
 #include <ctype.h>
 #include <stdarg.h>
 
+#include "config.h"
+
 #if !defined(_WIN32) && !defined(WIN32)
 # include <signal.h>
 # if !defined(__RTP__) && !defined(_WRS_KERNEL)
@@ -1480,6 +1482,17 @@ static void open_db(struct callback_data *p){
 #ifndef SQLITE_OMIT_LOAD_EXTENSION
     sqlite3_enable_load_extension(p->db, 1);
 #endif
+    // XXX Preload modules 
+    if( sqlite3_load_extension(p->db, PREFIX"/lib/libutf8tok.so", 0, 0) ) {
+      fprintf(stderr,"Error: unable to preload extension \"%s\"\n",
+              sqlite3_errmsg(db));
+      exit(1);
+    }
+    if( sqlite3_load_extension(p->db, PREFIX"/lib/libjl_sqlite3_sha1.so", 0, 0) ) {
+      fprintf(stderr,"Error: unable to preload extension \"%s\"\n",
+              sqlite3_errmsg(db));
+      exit(1);
+    }
   }
 }
 
