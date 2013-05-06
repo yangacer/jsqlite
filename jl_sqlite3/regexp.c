@@ -42,7 +42,14 @@ static void sqlite3_regexp( sqlite3_context *context, int argc, sqlite3_value **
     }
   } else {
     const unsigned char *subject = sqlite3_value_text(argv[1]);
-    pcre_errcode = pcre_exec(pattern, NULL, (const char *) subject, strlen((const char *) subject), 0, 0, NULL, 0);
+    size_t len = strlen(subject);
+    // dequote
+    if(subject[len-1] == '"') len--;
+    if(subject[0] == '"') {
+      subject++;
+      len--;
+    }
+    pcre_errcode = pcre_exec(pattern, NULL, (const char *) subject, len, 0, 0, NULL, 0);
     if( pcre_errcode < 0 ) {
       char *errmsg;
       switch( pcre_errcode ) {
