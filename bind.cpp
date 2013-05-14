@@ -31,8 +31,11 @@ int select_bind_text(json::array_t &result,
          v = std::string(beg, end);
     }
   }
-  sqlite3_finalize(prepared);
-  return code;
+  if( code != SQLITE_DONE ) {
+    sqlite3_finalize(prepared);
+    return code;
+  }
+  return sqlite3_finalize(prepared);
 }
 
 }
