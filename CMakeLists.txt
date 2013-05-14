@@ -13,7 +13,7 @@ add_subdirectory ( jl_sqlite3 )
 
 include_directories ( js_sqlite3 ${Boost_INCLUDE_DIRS} ${JSONCC_INCLUDE_DIRS} )
 
-add_library ( jsqlite SHARED jsqlite.cpp gen.cpp ) #where.cpp)
+add_library ( jsqlite SHARED jsqlite.cpp gen.cpp bind.cpp ) #where.cpp)
 target_link_libraries ( jsqlite ${JSONCC_LIBRARIES} pthread jl_sqlite3)
 
 add_library ( utf8tok SHARED utf8_tokenizer.cpp )

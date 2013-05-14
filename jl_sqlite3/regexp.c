@@ -42,7 +42,7 @@ static void sqlite3_regexp( sqlite3_context *context, int argc, sqlite3_value **
     }
   } else {
     const unsigned char *subject = sqlite3_value_text(argv[1]);
-    size_t len = strlen(subject);
+    size_t len = strlen((char const*)subject);
     // dequote
     if(subject[len-1] == '"') len--;
     if(subject[0] == '"') {

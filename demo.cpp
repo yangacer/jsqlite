@@ -3,6 +3,7 @@
 #include "jl_sqlite3/sqlite3.h"
 #include "json/json.hpp"
 #include "jsqlite.hpp"
+#include "bind.hpp"
 
 #define PROMPT_ERROR(ec) if(ec){\
   cerr << ec << "\n"; sqlite3_free(ec); ec=0; \
@@ -50,6 +51,7 @@ int main()
   stmt.clear();
   stmt.str("");
   
+  // normal select
   stmt << "SELECT * FROM person WHERE name == " << 
     lit(mbof(person)["name"].var());
 
@@ -105,6 +107,17 @@ int main()
   
   json::pretty_print(cerr, obj_result);
   
+  // select with binding
+  cout << "Select with binding\n";
+  stmt.clear(); stmt.str("");
+  results.clear();
+  stmt << "SELECT * FROM person WHERE name == ?;";
+  argument arg{"\"DOD'OGIN\"", 10, 1};
+  select_bind_text(results, db, stmt.str(), &arg, 1);
+
+  for( auto i = results.begin(); i != results.end(); ++i)
+    json::pretty_print(std::cerr, *i);
+
   sqlite3_close(db);
   return 0;
 }
