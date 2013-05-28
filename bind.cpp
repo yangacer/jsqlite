@@ -12,7 +12,7 @@ int select_bind_text(json::array_t &result,
                 size_t arg_num)
 {
   sqlite3_stmt *prepared = 0;
-  sqlite3_prepare_v2(db, stmt.c_str(), -1, &prepared, NULL);
+  sqlite3_prepare_v2(db, stmt.c_str(), stmt.size(), &prepared, NULL);
   for(size_t i=0; i < arg_num; ++i) 
     sqlite3_bind_text(prepared, arg[i].seq_num, arg[i].value, arg[i].size, SQLITE_STATIC);
   int code = SQLITE_DONE;

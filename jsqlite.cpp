@@ -11,7 +11,12 @@ inline int
 wait_if_busy(sqlite3 *db, char const *stmt, exec_cb_type cb, void* cb_arg, char** err_str)
 {
   int ec=0;
-  while ( SQLITE_BUSY == (ec = sqlite3_exec(db,stmt,cb,cb_arg,err_str)) );
+  int wait_cnt = 0;
+  while ( SQLITE_BUSY == (ec = sqlite3_exec(db,stmt,cb,cb_arg,err_str)) ) {
+    ++wait_cnt;
+    if(wait_cnt > 100)
+      break;
+  }
   return ec;
 }
 
