@@ -71,7 +71,7 @@ int select_cb(void* result_arg, int col_num, char ** col_val, char **col_name)
     if(col_val[i]) {
       char const *beg = col_val[i];
       char const *end = beg + strlen(col_val[i]);
-      if(!json::phrase_parse(beg, end, v))
+      if(!json::phrase_parse(beg, end, v) || beg != end)
         v = std::string(beg, end);
     }  
   }
@@ -110,8 +110,8 @@ int select_as_map_cb(void* result_arg, int col_num, char ** col_val, char **col_
           json::var_t &v = obj[col_name[i]];
           beg = col_val[i];
           end = beg + strlen(col_val[i]);
-          if(!json::phrase_parse(beg, end, v)) 
-            result.erase(key_col_str);
+          if(!json::phrase_parse(beg, end, v) || beg != end) 
+            v = std::string(beg, end);
         }
       }
     }

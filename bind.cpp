@@ -27,7 +27,7 @@ int select_bind_text(json::array_t &result,
       json::var_t &v = obj[col_name];
       char const *beg = (char const *)sqlite3_column_text(prepared, i);
       char const *end = beg + sqlite3_column_bytes(prepared, i);
-      if(!json::phrase_parse(beg, end, v))
+      if(!json::phrase_parse(beg, end, v) || beg != end)
          v = std::string(beg, end);
     }
   }
