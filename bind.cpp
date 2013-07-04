@@ -25,10 +25,11 @@ int select_bind_text(json::array_t &result,
     for(int i=0; i< col_cnt; ++i) {
       char const *col_name = sqlite3_column_name(prepared, i);
       json::var_t &v = obj[col_name];
-      char const *beg = (char const *)sqlite3_column_text(prepared, i);
+      char const *col_i = (char const *)sqlite3_column_text(prepared, i); 
+      char const *beg = col_i;
       char const *end = beg + sqlite3_column_bytes(prepared, i);
       if(!json::phrase_parse(beg, end, v) || beg != end)
-         v = std::string(beg, end);
+        v = std::string(col_i);
     }
   }
   if( code != SQLITE_DONE ) {
@@ -38,4 +39,4 @@ int select_bind_text(json::array_t &result,
   return sqlite3_finalize(prepared);
 }
 
-}
+} // namespace jsqlite
