@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
-project (jl_sqlite3 C)
+project (jl_sqlite3)
 
 add_definitions ( -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_FTS3_PARENTHESIS )
 
@@ -30,7 +30,6 @@ endif()
 if ( Boost_FOUND )
   include_directories ( ${Boost_INCLUDE_DIRS} )
   add_library ( jl_sqlite3_unihan SHARED unihan.cpp )
-  set_target_properties ( jl_sqlite3_unihan PROPERTIES LINKER_LANGUAGE CXX )
   target_link_libraries ( jl_sqlite3_unihan jl_sqlite3 unihan)
 endif()
 
